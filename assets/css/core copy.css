@@ -1,0 +1,61 @@
+/* ============================================================
+  CORE.CSS — minimal, structural only
+  - No added colors/borders/radii
+  - Always 3 columns (no MQ column changes)
+  - No hard-coded spacing beyond wrapper centering
+============================================================ */
+
+/* Base reset */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body { margin: 0; }
+
+/* Wrapper (as you had it) */
+.plura-vs-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Header: no styling beyond normal flow (intentionally minimal) */
+.plura-vs-header {}
+
+/* Grid: fixed 3 columns, no gaps hard-coded */
+.plura-vs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0; /* adjust via tokens elsewhere if needed */
+}
+
+/* Post card: structural only (no radius, no bg, no shadow) */
+.plura-vs-post {
+  position: relative;
+  overflow: hidden;
+  /* enforce 4:5 ratio to mimic Instagram posts */
+  aspect-ratio: 4 / 5;
+}
+
+/* Media fills the post area */
+.plura-vs-media,
+.plura-vs-media > img {
+  width: 100%;
+  height: 100%;
+}
+
+.plura-vs-media > img {
+  object-fit: cover;
+}
+
+/* Overlay host for template layer (structural only) */
+.plura-vs-layer-host {
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* templates can override inside */
+}
+
+.plura-vs-layer-host > * {
+  pointer-events: auto;
+}

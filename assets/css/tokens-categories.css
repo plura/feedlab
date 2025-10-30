@@ -1,0 +1,19 @@
+/* ============================================================
+	Category tokens (colors) and mapping
+	- Semantic tokens only; no component assumptions
+	- Map category → --plura-vs-category-color via data attribute
+============================================================ */
+
+/* Category palette */
+:root {
+	--plura-vs-category-branding-color: #e9446a;
+	--plura-vs-category-web-color: #00c4cc;
+	--plura-vs-category-app-color: #f5a623;
+	--plura-vs-category-design-color: #7b7b7b;
+}
+
+/* Mapping via data-category */
+.plura-vs-post[data-category="branding"] { 	--plura-vs-category-color: var(--plura-vs-category-branding-color); }
+.plura-vs-post[data-category="web"] {		--plura-vs-category-color: var(--plura-vs-category-web-color); }
+.plura-vs-post[data-category="app"] {		--plura-vs-category-color: var(--plura-vs-category-app-color); }
+.plura-vs-post[data-category="design"] {	--plura-vs-category-color: var(--plura-vs-category-design-color); }

@@ -1,0 +1,31 @@
+/* ============================================================
+	Schemes (skins)
+	- Only override variables here
+	- Attach to .plura-vs-wrapper (e.g., .scheme1)
+============================================================ */
+
+.scheme1 {
+	--plura-vs-info-bg: #ffffff;
+	--plura-vs-text: #141414;
+	--plura-vs-caption: #3c3c3c;
+	--plura-vs-bar-width: 8px;
+	--plura-vs-gap: 8px;
+}
+
+.scheme2 {
+	/* Glassy overlay, tighter bar */
+	--plura-vs-info-bg: rgba(255, 255, 255, 0.72);
+	--plura-vs-text: #0f0f0f;
+	--plura-vs-caption: #272727;
+	--plura-vs-bar-width: 6px;
+	--plura-vs-gap: 10px;
+}
+
+.scheme3 {
+	/* Dark card for bright imagery */
+	--plura-vs-info-bg: rgba(10, 10, 10, 0.88);
+	--plura-vs-text: #f2f2f2;
+	--plura-vs-caption: #d0d0d0;
+	--plura-vs-bar-width: 8px;
+	--plura-vs-gap: 8px;
+}

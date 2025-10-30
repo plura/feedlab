@@ -1,0 +1,115 @@
+/* ============================================================
+  CORE.CSS — App UI only (app/sidebar/main/grid)
+  - Root layout uses flex
+  - Grid uses CSS Grid (fixed 3 columns)
+  - No colors/borders/radii; spacing via tokens only
+============================================================ */
+
+/* 0) Root UI tokens */
+:root {
+	--plura-ui-font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+
+	/* global spacing */
+	--plura-ui-padding: 16px;
+
+	/* App shell */
+	--plura-ui-app-max: 1280px;
+	--plura-ui-app-gap: 0;               /* space between sidebar and main */
+	--plura-ui-app-padding-inline: 0;
+	--plura-ui-app-padding-block: 0;
+
+	/* Sidebar */
+	--plura-ui-sidebar-width: 260px;
+	--plura-ui-sidebar-gap: 0;           /* vertical gap inside sidebar/filterbar */
+
+	/* Main content */
+	--plura-ui-main-gap: 0;
+
+	/* Grid */
+	--plura-ui-grid-max: 800px;          /* centers grid with max-width */
+	--plura-ui-grid-columns: 3;          /* fixed: Instagram preview */
+	--plura-ui-grid-gap: 0;              /* gap between posts */
+}
+
+/* 1) Base */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; font-family: var(--plura-ui-font-family); }
+
+/* 2) App wrapper: sidebar + main (flex row) */
+.plura-vs-app {
+	/* max-width: var(--plura-ui-app-max);  ← enable when you want to bound the whole shell */
+	/* margin: 0 auto; */
+	padding-inline: var(--plura-ui-app-padding-inline);
+	padding-block: var(--plura-ui-app-padding-block);
+
+	display: flex;
+	gap: var(--plura-ui-app-gap);
+	align-items: flex-start;
+}
+
+/* 3) Sidebar (left column by default)
+   - "Fixed" feel by making main the scroll container */
+.plura-vs-sidebar {
+	flex: 0 0 var(--plura-ui-sidebar-width);
+	display: flex;
+	flex-direction: column;
+	gap: var(--plura-ui-sidebar-gap);
+	height: 100dvh;
+	height: 100svh;              /* modern viewport unit for mobile address bar changes */
+	overflow: hidden;            /* sidebar doesn't scroll; stays visually fixed */
+}
+
+/* FilterBar container (module mounts here) */
+.plura-vs-filterbar {
+	padding: var(--plura-ui-padding);
+}
+
+/* Optional inner stack for the filter controls */
+.plura-vs-filterbar > div {
+	display: flex;
+	flex-direction: column;
+	gap: var(--plura-ui-sidebar-gap);
+}
+
+/* 4) Main content (right column) — the only scroll container */
+.plura-vs-main {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+	gap: var(--plura-ui-main-gap);
+	height: 100dvh;
+	height: 100svh;              /* modern viewport unit */
+	overflow: auto;              /* main scrolls, sidebar remains visually fixed */
+	scrollbar-gutter: stable;    /* avoid layout shift when scrollbar appears */
+}
+
+/* 5) Grid: centered, fixed 3 columns, tokenized gap */
+.plura-vs-grid {
+	margin: 0 auto;                                /* centers within main */
+	display: grid;
+	grid-template-columns: repeat(var(--plura-ui-grid-columns), 1fr);
+	gap: var(--plura-ui-grid-gap);
+	max-width: var(--plura-ui-grid-max);
+}
+
+/* 6) Post & media (no visual styles) */
+.plura-vs-post {
+	position: relative;
+	overflow: hidden;
+	aspect-ratio: 4 / 5; /* Instagram 4:5 */
+}
+
+.plura-vs-media,
+.plura-vs-media > img { width: 100%; height: 100%; }
+.plura-vs-media > img { object-fit: cover; }
+
+/* Template layer host */
+.plura-vs-layer-host {
+	position: absolute;
+	inset: 0;
+	pointer-events: none; /* templates can override inside */
+}
+.plura-vs-layer-host > * { pointer-events: auto; }

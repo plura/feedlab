@@ -1,0 +1,45 @@
+/* ============================================================
+	Template: v1-bottomleft — Bottom-left info layer
+	- Absolute at 30px from bottom/left
+	- Flex with 8px gap
+	- Color bar uses category token (--plura-vs-bar-color)
+	- Caption uppercase
+============================================================ */
+
+/* Root info container */
+.plura-vs-info {
+	position: absolute;
+	left: 30px;
+	bottom: 30px;
+	display: flex;
+	align-items: stretch;
+	gap: 8px; /* requested gap */
+}
+
+/* Vertical color bar */
+.plura-vs-colorbar {
+	flex: 0 0 8px;
+	width: 8px;
+	height: auto;
+	background: var(--plura-vs-category-color);
+}
+
+/* Text box */
+.plura-vs-infobox {
+	background: var(--plura-vs-info-bg);
+	color: var(--plura-vs-text);
+	padding: 12px 16px;
+}
+
+/* Title & caption */
+.plura-vs-title {
+	margin: 0 0 6px 0;
+	font-weight: 500;
+	color: var(--plura-vs-text);
+}
+.plura-vs-caption {
+	margin: 0;
+	text-transform: uppercase; /* requested */
+	letter-spacing: 0.08em;
+	color: var(--plura-vs-caption);
+}

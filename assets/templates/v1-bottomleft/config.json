@@ -1,0 +1,11 @@
+{
+  "name": "v1-bottomleft",
+  "title": "Bottom Left",
+  "fonts": [
+    "https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap"
+  ],
+  "bindings": {
+    "title": ".plura-vs-title",
+    "caption": ".plura-vs-caption"
+  }
+}
