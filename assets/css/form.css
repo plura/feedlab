@@ -1,0 +1,79 @@
+/* ============================================================
+	FORM.CSS — FilterBar form primitives (labels, inputs, selects, buttons)
+	- Consumes tokens.css only
+	- No template styles here
+============================================================ */
+
+/* 0) Form container */
+.plura-vs-form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--plura-ui-space-4);
+	font-family: var(--plura-ui-font-family-base);
+	font-size: var(--plura-ui-font-size-base);
+	color: var(--plura-ui-color-fg);
+}
+
+/* 1) Field grouping */
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: var(--plura-ui-space-1);
+}
+
+/* Optional helper text below controls */
+.form-hint {
+	font-size: var(--plura-ui-font-size-sm);
+	color: var(--plura-ui-color-fg-muted);
+}
+
+/* 2) Labels */
+.form-group > label {
+	font-size: var(--plura-ui-font-size-sm);
+	font-weight: var(--plura-ui-font-weight-medium);
+}
+
+/* 3) Controls: inputs, selects, and buttons share the same chrome */
+.plura-vs-form input,
+.plura-vs-form select,
+.plura-vs-form button {
+	min-height: var(--plura-ui-control-height);
+	padding-inline: var(--plura-ui-control-padding-inline);
+	display: inline-flex;
+	align-items: center;
+	gap: var(--plura-ui-control-gap);
+
+	font: inherit;
+	line-height: var(--plura-ui-line-height);
+	color: var(--plura-ui-color-fg);
+	background: var(--plura-ui-color-surface);
+
+	border: var(--plura-ui-border-width) solid var(--plura-ui-color-border);
+	border-radius: var(--plura-ui-radius-sm);
+
+	/* reset */
+	margin: 0;
+}
+
+/* Inputs/selects specifics */
+.plura-vs-form input,
+.plura-vs-form select {
+	width: 100%;
+}
+
+/* Buttons (e.g., theme toggle) */
+.plura-vs-form button {
+	cursor: pointer;
+}
+
+/* 4) Focus */
+.plura-vs-form :where(input, select, button):focus-visible {
+	outline: 2px solid var(--plura-ui-color-focus);
+	outline-offset: 2px;
+}
+
+/* 5) Disabled (optional) */
+.plura-vs-form :where(input, select, button):disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}

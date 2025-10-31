@@ -1,33 +1,30 @@
 // assets/js/templateComponent.js
-// ------------------------------------------------------------
-// TemplateComponent — responsible for binding data to a cloned
-// template node and returning the rendered element.
-// ------------------------------------------------------------
+export function createTemplateComponent(virtualRoot, bindings = {}) {
+	if (!virtualRoot) throw new Error('[TemplateComponent] Missing template root');
 
-export class TemplateComponent {
-	constructor(virtualRoot, bindings = {}) {
-		this.virtualRoot = virtualRoot;
-		this.bindings = bindings;
-	}
-
-	/**
-	 * Render one item by cloning the virtual template root,
-	 * then binding data fields to DOM elements.
-	 * @param {Object} data
-	 * @param {number} index
-	 * @returns {HTMLElement}
-	 */
-	render(data = {}, index = 0) {
-		if (!this.virtualRoot) throw new Error('[TemplateComponent] Missing template root');
-		const node = this.virtualRoot.cloneNode(true);
-
-		// Apply bindings (field → selector)
-		for (const [field, selector] of Object.entries(this.bindings)) {
+	function bind(node, data) {
+		for (const [field, target] of Object.entries(bindings)) {
+			const [selector, mode] = Array.isArray(target) ? target : [target, 'text'];
 			const el = node.querySelector(selector);
-			if (!el || data[field] == null) continue;
-			el.textContent = data[field];
-		}
+			if (!el) continue;
 
+			const value = data?.[field] ?? '';
+			if (mode === 'html') {
+				el.innerHTML = value;
+			} else if (mode && mode.startsWith('attr:')) {
+				const attr = mode.slice(5);
+				if (attr) el.setAttribute(attr, value);
+			} else {
+				el.textContent = value;
+			}
+		}
 		return node;
 	}
+
+	function render(data = {}) {
+		const node = virtualRoot.cloneNode(true);
+		return bind(node, data);
+	}
+
+	return { render, bind };
 }

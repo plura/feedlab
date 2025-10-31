@@ -3,19 +3,32 @@
 
 import { el } from '../core/utils.js';
 
-export function buildGrid(posts, { gridElement, imageBase = 'assets/media/' } = {}) {
+/**
+ * @param {Array} posts
+ * @param {Object} options
+ * @param {HTMLElement} options.gridElement  (required) grid container
+ * @param {URL|string} [options.imageBase]   optional base for resolving post.image
+ */
+export function buildGrid(posts, { gridElement, imageBase } = {}) {
 	if (!gridElement) throw new Error('[Grid] gridElement is required');
 
 	gridElement.innerHTML = ''; // clear if re-building
 	const frag = document.createDocumentFragment();
 
+	const base = imageBase
+		? (imageBase instanceof URL ? imageBase : new URL(String(imageBase), location.href))
+		: null;
+
 	posts.forEach((item) => {
 		const article = el('article', { class: 'plura-vs-post' });
 		if (item.category) article.setAttribute('data-category', item.category);
 
-		const src = (item.image?.startsWith('http') || item.image?.startsWith('assets/'))
-			? item.image
-			: `${imageBase}${item.image || ''}`;
+		let src = item.image || '';
+		try {
+			src = base ? new URL(src, base).toString() : src; // resolves absolute/relative correctly
+		} catch {
+			// fall back to raw value if URL construction fails
+		}
 
 		const img = el('img', {
 			src,

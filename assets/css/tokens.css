@@ -1,0 +1,79 @@
+/* ============================================================
+	PLURA UI TOKENS
+	Foundation variables for layout, typography, color, and motion
+	Used by: core.css, form.css, and all UI components
+============================================================ */
+
+:root {
+	/* ------------------------------------------------------------
+		TYPOGRAPHY
+	------------------------------------------------------------ */
+	--plura-ui-font-family-base: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+
+	--plura-ui-font-size-base: 15px;
+	--plura-ui-font-size-sm: 13px;
+	--plura-ui-font-size-lg: 17px;
+
+	--plura-ui-font-weight-regular: 400;
+	--plura-ui-font-weight-medium: 500;
+	--plura-ui-font-weight-bold: 600;
+
+	--plura-ui-line-height: 1.4;
+
+	/* ------------------------------------------------------------
+		SPACING SCALE (multiples of 4px)
+	------------------------------------------------------------ */
+	--plura-ui-space-1: 4px;
+	--plura-ui-space-2: 8px;
+	--plura-ui-space-3: 12px;
+	--plura-ui-space-4: 16px;
+	--plura-ui-space-5: 24px;
+	--plura-ui-space-6: 32px;
+
+	/* ------------------------------------------------------------
+		COLOR SYSTEM — Light theme base
+	------------------------------------------------------------ */
+	--plura-ui-color-bg: #ffffff;
+	--plura-ui-color-surface: #f6f7f8;
+	--plura-ui-color-border: #d5d6d8;
+
+	--plura-ui-color-fg: #1e1f21;
+	--plura-ui-color-fg-muted: #6b6c6f;
+
+	--plura-ui-color-accent: #007aff;
+	--plura-ui-color-focus: var(--plura-ui-color-accent);
+
+	/* ------------------------------------------------------------
+		RADII & BORDERS
+	------------------------------------------------------------ */
+	--plura-ui-radius-sm: 4px;
+	--plura-ui-radius-md: 8px;
+	--plura-ui-border-width: 1px;
+
+	/* ------------------------------------------------------------
+		MOTION
+	------------------------------------------------------------ */
+	--plura-ui-transition-fast: 120ms ease-out;
+	--plura-ui-transition-base: 180ms ease-in-out;
+
+	/* ------------------------------------------------------------
+		FORM ELEMENTS (shared)
+	------------------------------------------------------------ */
+	--plura-ui-control-height: 36px;
+	--plura-ui-control-padding-inline: var(--plura-ui-space-2);
+	--plura-ui-control-gap: var(--plura-ui-space-2);
+}
+
+/* ============================================================
+	THEME OVERRIDES — Dark mode
+============================================================ */
+.theme-dark {
+	--plura-ui-color-bg: #121314;
+	--plura-ui-color-surface: #1a1b1c;
+	--plura-ui-color-border: #2c2d2e;
+
+	--plura-ui-color-fg: #f3f4f5;
+	--plura-ui-color-fg-muted: #9c9d9f;
+
+	--plura-ui-color-accent: #4fa8ff;
+}

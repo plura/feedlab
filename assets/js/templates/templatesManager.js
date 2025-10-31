@@ -1,115 +1,122 @@
-// assets/js/templates.js
+// assets/js/templates/templatesManager.js
 // ------------------------------------------------------------
-// Role: Template Manager (UI-agnostic)
-// - Loads minimal registry [{ name, path }]
-// - Loads per-template config.json (fonts + bindings)
-// - Injects fonts once (kept), swaps template CSS (remove old, add new)
-// - Fetches & caches HTML, clones it, binds data, and atomically replaces
-//   into the provided `post.host` (no grid selectors).
+// Templates Manager — orchestrates templates using a feed manifest
+// - Accepts inline registry (obj/array): { name, title, path, component{html,css}, fonts[], bindings{} }
+// - Resolves URLs relative to feed.json (and per-template 'path')
+// - Delegates asset IO/injections to TemplateLoader
+// - Delegates node rendering/binding to TemplateComponent
 // ------------------------------------------------------------
 
-import { injectCSS, removeCSS, getHTML } from '../core/utils.js';
+import { createTemplateLoader } from './templateLoader.js';
+import { createTemplateComponent } from './templateComponent.js';
 
 const store = {
-	templates: [],        // { name, title, path, config, htmlUrl, cssUrl }
+	feedBase: null,
+	labels: null,
+	templates: [],
 	activeName: null,
-	activeCssHref: null,
-	posts: []             // array of { title, caption, image, category, host: HTMLElement }
+	posts: []
 };
 
+// Caches
+const componentCache = new Map(); // templateName -> component instance
+const loader = createTemplateLoader();
+
+function toArray(x) { return Array.isArray(x) ? x : (x ? [x] : []); }
+
 export const Templates = {
-	async init(registryUrl) {
-		const list = await fetch(registryUrl).then(r => r.json());
-		if (!Array.isArray(list) || list.length === 0) {
-			throw new Error('[Templates] Empty registry.');
-		}
+	/**
+	 * @param {Object} opts
+	 * @param {Array|Object} opts.registry  Inline templates registry (array or single object)
+	 * @param {URL} opts.feedBase           Base URL for resolving relative paths
+	 * @param {Object} [opts.labels]        Optional labels map (for future filters/UI)
+	 */
+	async init({ registry, feedBase, labels } = {}) {
+		store.feedBase = feedBase instanceof URL ? feedBase : new URL(String(feedBase), location.href);
+		store.labels = labels || null;
 
-		const expanded = [];
-		for (const t of list) {
-			const basePath = t.path || '';
-			const cfgUrl = basePath + 'config.json';
-			const cfg = await fetch(cfgUrl).then(r => r.json());
+		const list = toArray(registry);
+		if (!list.length) throw new Error('[Templates] Empty registry.');
 
-			expanded.push({
-				name:   cfg.name  || t.name,
-				title:  cfg.title || t.title || t.name,
-				path:   basePath,
-				config: cfg,
-				htmlUrl: basePath + 'render.html',
-				cssUrl:  basePath + 'styles.css'
-			});
-		}
-		store.templates = expanded;
-		return expanded.map(x => ({ name: x.name, title: x.title }));
+		// Normalize & resolve URLs for each template
+		store.templates = list.map((t) => {
+			const baseTpl = t.path ? new URL(t.path, store.feedBase) : store.feedBase;
+			const htmlUrl = t?.component?.html ? new URL(t.component.html, baseTpl).toString() : null;
+			const cssUrl  = t?.component?.css  ? new URL(t.component.css,  baseTpl).toString() : null;
+			const fonts   = toArray(t.fonts).map(f => new URL(f, baseTpl).toString());
+			return {
+				name: t.name,
+				title: t.title || t.name,
+				baseTpl,
+				htmlUrl,
+				cssUrl,
+				fonts,
+				bindings: t.bindings || {}
+			};
+		});
+
+		return this.list();
 	},
 
-	/**
-	 * Provide posts enriched with `.host` elements; manager stays UI-agnostic.
-	 */
 	setContext(posts) {
 		store.posts = Array.isArray(posts) ? posts : [];
 	},
 
 	list() {
-		return store.templates.map(t => ({ name: t.name, title: t.title, path: t.path }));
+		return store.templates.map(t => ({ name: t.name, title: t.title }));
 	},
 
 	/**
-	 * Apply/swap the active template:
-	 * - inject fonts (deduped; never removed)
-	 * - remove previous template CSS and inject the new CSS
-	 * - fetch & parse HTML, bind via config.bindings, and replace into each post.host
+	 * Swap to a template:
+	 * - Ensure fonts (persist, deduped)
+	 * - Remove previous template CSS + inline styles
+	 * - Ensure new template CSS
+	 * - Load/cached HTML (+ inline styles), mount inline styles
+	 * - Render per post via TemplateComponent
 	 */
 	async apply(name) {
 		const tpl = store.templates.find(t => t.name === name) || store.templates[0];
 		if (!tpl) return;
 
-		// 1) Fonts persist; inject once (deduped by utils)
-		if (Array.isArray(tpl.config.fonts)) {
-			for (const url of tpl.config.fonts) {
-				injectCSS(url, { kind: 'font' });
-			}
+		// Fonts persist (never removed)
+		loader.ensureFonts(tpl);
+
+		// Remove previous CSS + inline styles (for previously active template)
+		if (store.activeName && store.activeName !== tpl.name) {
+			loader.removeCSSFor(store.activeName);
+			loader.removeInlineStyles(store.activeName);
 		}
 
-		// 2) Remove previous template CSS (fonts are left intact)
-		if (store.activeCssHref && store.activeCssHref !== tpl.cssUrl) {
-			removeCSS(store.activeCssHref);
-		}
+		// Ensure current template CSS
+		loader.ensureCSS(tpl);
 
-		// 3) Inject current template CSS (cached by href)
-		injectCSS(tpl.cssUrl, { id: `tpl-css-${tpl.name}`, 'data-asset': 'css', kind: 'css' });
-		store.activeCssHref = tpl.cssUrl;
-		store.activeName = tpl.name;
-
-		// 4) Load & parse HTML once; clone per post
-		const html = await getHTML(tpl.htmlUrl);
-		const parserHost = document.createElement('div');
-		parserHost.innerHTML = html;
-		const virtualRoot = parserHost.firstElementChild;
+		// Load HTML + extract inline styles (cached)
+		const { virtualRoot, inlineStyles } = await loader.getTemplateHTML(tpl);
 		if (!virtualRoot) return;
 
-		// 5) Bind & atomically replace into each provided host (no selectors)
-		const bindings = tpl.config.bindings || {};
+		// Mount current inline styles
+		loader.mountInlineStyles(tpl.name, inlineStyles);
+
+		// Component: build or reuse for this template
+		let component = componentCache.get(tpl.name);
+		if (!component) {
+			component = createTemplateComponent(virtualRoot, tpl.bindings || {});
+			componentCache.set(tpl.name, component);
+		}
+
+		// Render per post (atomic replace)
 		for (const data of store.posts) {
 			const host = data?.host;
 			if (!host) continue;
-
-			const node = virtualRoot.cloneNode(true);
-
-			for (const [key, selector] of Object.entries(bindings)) {
-				const el = node.querySelector(selector);
-				if (!el) continue;
-				el.textContent = data?.[key] ?? '';
-			}
-
+			const node = component.render(data);
 			host.replaceChildren(node);
 		}
+
+		store.activeName = tpl.name;
 	},
 
-	/** Convenience alias */
 	async switch(name) { return this.apply(name); },
 
-	/** Reapply the current template to current posts */
 	async refresh() {
 		if (!store.activeName) return;
 		await this.apply(store.activeName);

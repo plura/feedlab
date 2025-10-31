@@ -201,13 +201,6 @@ MIT © Plura
 
 
 
-feat: bootstrap FeedLab (framework-free visual system lab)
 
-* add app shell (sidebar + main) and fixed 3-col grid
-* implement tokens.css (typography, color roles, spacing, motion)
-* add core.css (app layout only) and form.css (UI controls for FilterBar)
-* generic FormBuilder with label/control/hint + schema factory for FilterBar
-* templates manager (HTML/CSS/fonts per template) with atomic overlay binding
-* initial data files (posts.json, templates.json) and template v1-bottomleft
 
 
