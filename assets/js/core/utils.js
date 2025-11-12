@@ -128,3 +128,24 @@ export function _debugCaches() {
     html: Array.from(_htmlCache.keys())
   };
 }
+
+
+
+
+
+/* schema */
+export function schemaData( schema = [] ) {
+
+	const initialValues = schema.reduce( ( acc, field ) => {
+
+		if(!field || !field.name || field.initial === undefined ) return acc;
+
+		acc[ field.name ] = field.initial;
+
+		return acc;
+
+	}, {});
+
+	return { schema, initialValues }
+
+}

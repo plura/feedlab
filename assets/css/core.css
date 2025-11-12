@@ -32,8 +32,18 @@ body {
 	padding-block: 0;
 }
 
+/* order */
+.plura-vs-app .plura-vs-panel {
+	order: 1;
+}
+
+.plura-vs-app .plura-vs-main {
+	order: 2;
+}
+
+
 /* Sidebar: “fixed” feel without position:fixed (main does the scrolling) */
-.plura-vs-sidebar {
+.plura-vs-panel {
 	flex: 0 0 var(--plura-ui-sidebar-width, 260px);
 	display: flex;
 	flex-direction: column;
@@ -41,6 +51,10 @@ body {
 	height: 100svh;
 	overflow: hidden;
 	padding: var(--plura-ui-space-4);
+
+	/* ADD: visual surface + divider (non-destructive) */
+	background: var(--plura-ui-color-surface);
+	border-right: var(--plura-ui-border-width) solid var(--plura-ui-color-border);
 }
 
 /* FilterBar host (module mounts here) */
@@ -59,6 +73,9 @@ body {
 	overflow: auto;
 	scrollbar-gutter: stable;
 	padding: var(--plura-ui-space-4);
+
+	/* ADD: explicit background (non-destructive) */
+	background: var(--plura-ui-color-bg);
 }
 
 /* 2) Grid: centered, fixed 3 columns, tokenized gap/max */
@@ -66,9 +83,19 @@ body {
 	margin: 0 auto;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
-	gap: var(--plura-ui-space-4);
 	max-width: var(--plura-ui-grid-max, 800px);
 }
+
+@media screen and (min-width: 767.99px) {
+	
+	.plura-vs-app:not(.is-mobile) .plura-vs-grid {
+		gap: var(--plura-ui-space-4);
+	}
+
+}
+
+
+
 
 /* 3) Post card & media (no visual chrome) */
 .plura-vs-post {
@@ -93,3 +120,14 @@ body {
 }
 
 .plura-vs-layer-host > * { pointer-events: auto; }
+
+/* ------------------------------------------------------------
+   Optional helpers (only used if your FilterBar toggles them)
+   ------------------------------------------------------------ */
+
+/* If you decide to use app-level ratio classes */
+.ratio-1-1 .plura-vs-post { --plura-vs-aspect: 1 / 1; }
+.ratio-4-5 .plura-vs-post { --plura-vs-aspect: 4 / 5; }
+/* And then in template/global CSS, you can do:
+   .plura-vs-post { aspect-ratio: var(--plura-vs-aspect, 4 / 5); }
+*/

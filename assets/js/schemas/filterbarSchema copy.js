@@ -6,13 +6,15 @@
 // - mobile: off/on toggle (adds .is-mobile on app)
 // - ratio: radio group (1/1 or 4/5)
 
-export function getSchema(config = {}) {
+export function createFilterSchema( values = {}) {
+
+
 	return [
 		{
 			type: 'select',
 			name: 'template',
 			label: 'Template',
-			options: config.options?.templates?.map(t => ({
+			options: values.templates?.map(t => ({
 				value: t.name,
 				label: t.title || t.name
 			}))
@@ -37,7 +39,7 @@ export function getSchema(config = {}) {
 			type: 'radio',
 			name: 'ratio',
 			label: 'Aspect ratio',
-			initial: '4/5',
+			initial: || '4/5',
 			options: [
 				{ value: '1/1', label: '1:1' },
 				{ value: '4/5', label: '4:5' }
@@ -46,4 +48,4 @@ export function getSchema(config = {}) {
 	];
 }
 
-export default getSchema;
+export default createFilterSchema;

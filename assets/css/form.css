@@ -61,7 +61,7 @@
 	width: 100%;
 }
 
-/* Buttons (e.g., theme toggle) */
+/* Buttons (e.g. theme toggle) */
 .plura-vs-form button {
 	cursor: pointer;
 }
@@ -76,4 +76,41 @@
 .plura-vs-form :where(input, select, button):disabled {
 	opacity: 0.6;
 	cursor: not-allowed;
+}
+
+/* ===========================
+   ADDITIONS (non-destructive)
+   =========================== */
+
+/* Radio group pattern: <div class="radio-group"><label><input ...> Label</label>… */
+.plura-vs-form .radio-group {
+	display: flex;
+    gap: var(--plura-ui-space-4);
+    flex-wrap: wrap;
+}
+
+.plura-vs-form .radio-group > label {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--plura-ui-space-2);
+	font-size: var(--plura-ui-font-size-sm);
+	cursor: pointer;
+	user-select: none;
+}
+
+.plura-vs-form .radio-group input[type="radio"] {
+	inline-size: 14px;
+	block-size: 14px;
+	accent-color: var(--plura-ui-color-accent);
+}
+
+/* Toggle button gets accent treatment (used by Mobile / Theme) */
+.plura-vs-form .form-toggle {
+	background: var(--plura-ui-color-accent);
+	border-color: var(--plura-ui-color-accent);
+	color: var(--plura-ui-color-accent-contrast, #fff);
+}
+
+.plura-vs-form .form-toggle:hover {
+	filter: brightness(0.96);
 }

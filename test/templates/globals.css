@@ -1,4 +1,43 @@
-/* Category palette */
+/* ============================================================
+   Plura VS — Global tokens for FeedLab (template-agnostic)
+   Compact type tuned for overlay boxes on IG-like posts.
+   Templates may override any token locally.
+============================================================ */
+
+/* ---- Global tokens (neutral defaults) ---- */
+:root {
+	/* Font family default (templates may override, e.g., Inter in v1) */
+	--plura-vs-font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+		Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+	/* Weights */
+	--plura-vs-weight-regular: 400;
+	--plura-vs-weight-medium: 500;
+	--plura-vs-weight-semibold: 600;
+	--plura-vs-weight-bold: 700;
+
+	/* Compact base type (overlay-friendly) */
+	/* Title meant to sit over photos inside a small info box */
+	--plura-vs-title-size: 13px;
+	--plura-vs-title-line: 1.2;
+
+	/* Caption is intentionally small and uppercase */
+	--plura-vs-caption-size: 8px;
+	--plura-vs-caption-line: 1.25;
+	--plura-vs-caption-tracking: 0.08em;
+
+	/* Optional body for longer text variants */
+	--plura-vs-body-size: 12px;
+	--plura-vs-body-line: 1.35;
+
+	/* Neutral overlay defaults (light glass) — templates can override */
+	--plura-vs-text: #111;
+	--plura-vs-caption: #333;
+	--plura-vs-info-bg: rgba(255, 255, 255, 0.85);
+}
+
+/* ---- Category palette (kept) ---- */
 :root {
 	--plura-vs-category-branding-color: #e9446a;
 	--plura-vs-category-web-color: #00c4cc;
@@ -6,8 +45,38 @@
 	--plura-vs-category-design-color: #7b7b7b;
 }
 
-/* Mapping via data-category */
-.plura-vs-post[data-category="branding"] { 	--plura-vs-category-color: var(--plura-vs-category-branding-color); }
+/* Map data-category → current category color variable */
+.plura-vs-post[data-category="branding"] {	--plura-vs-category-color: var(--plura-vs-category-branding-color); }
 .plura-vs-post[data-category="web"] {		--plura-vs-category-color: var(--plura-vs-category-web-color); }
 .plura-vs-post[data-category="app"] {		--plura-vs-category-color: var(--plura-vs-category-app-color); }
 .plura-vs-post[data-category="design"] {	--plura-vs-category-color: var(--plura-vs-category-design-color); }
+
+/* ---- Optional theme override (future use) ---- */
+:root[data-theme="light"] {
+	--plura-vs-text: #111;
+	--plura-vs-caption: #333;
+	--plura-vs-info-bg: rgba(255, 255, 255, 0.85);
+}
+
+/* ---- Global utilities (safe across templates) ---- */
+.plura-vs-title {
+	font-family: var(--plura-vs-font-sans);
+	font-weight: var(--plura-vs-weight-semibold);
+	font-size: var(--plura-vs-title-size);
+	line-height: var(--plura-vs-title-line);
+	margin: 0;
+}
+.plura-vs-caption {
+	font-family: var(--plura-vs-font-sans);
+	font-weight: var(--plura-vs-weight-medium);
+	font-size: var(--plura-vs-caption-size);
+	line-height: var(--plura-vs-caption-line);
+	letter-spacing: var(--plura-vs-caption-tracking);
+	text-transform: uppercase;
+	margin: 0;
+}
+
+/* ---- Card baseline (no container-type here) ---- */
+.plura-vs-post {
+	position: relative; /* helpful for template overlays */
+}

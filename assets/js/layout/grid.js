@@ -3,16 +3,29 @@
 
 import { el } from '../core/utils.js';
 
+let gridElement;
+
 /**
  * @param {Array} posts
  * @param {Object} options
  * @param {HTMLElement} options.gridElement  (required) grid container
  * @param {URL|string} [options.imageBase]   optional base for resolving post.image
  */
-export function buildGrid(posts, { gridElement, imageBase } = {}) {
-	if (!gridElement) throw new Error('[Grid] gridElement is required');
+export function buildGrid(posts, { container, imageBase } = {}) {
+	if (!container) throw new Error('[Grid] container is required');
 
-	gridElement.innerHTML = ''; // clear if re-building
+	if( !gridElement ) {
+
+		gridElement = el('section', { class: 'plura-vs-grid' });
+
+		container.append( gridElement );
+
+	} else {
+
+		gridElement.innerHTML = ''; // clear if re-building
+
+	}
+
 	const frag = document.createDocumentFragment();
 
 	const base = imageBase

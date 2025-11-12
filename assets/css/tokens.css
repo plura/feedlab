@@ -62,6 +62,13 @@
 	--plura-ui-control-height: 36px;
 	--plura-ui-control-padding-inline: var(--plura-ui-space-2);
 	--plura-ui-control-gap: var(--plura-ui-space-2);
+
+	/* ------------------------------------------------------------
+		LAYOUT KNOBS (consumed by core.css)
+		Added non-destructively for sidebar/grid sizing.
+	------------------------------------------------------------ */
+	--plura-ui-sidebar-width: 280px;
+	--plura-ui-grid-max: 860px;
 }
 
 /* ============================================================

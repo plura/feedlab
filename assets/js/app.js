@@ -3,8 +3,8 @@
 
 import { Templates as TemplateManager } from './templates/templatesManager.js';
 import { buildGrid } from './layout/grid.js';
-import { FilterBar } from './layout/filterbar.js';
 import { el } from './core/utils.js';
+import { Panel } from './layout/panel.js';
 
 /**
  * Internal: inject a global stylesheet once (for feed-level styles)
@@ -41,16 +41,18 @@ export const App = {
 		// App wrapper (sidebar + main)
 		const schemeClass = (feed.scheme || '').trim();
 		const app     = el('div', { class: `plura-vs-app${schemeClass ? ' ' + schemeClass : ''}` });
-		const sidebar = el('aside', { class: 'plura-vs-sidebar' });
+		//const panel = el('div', { class: 'plura-vs-panel' });
 		const main    = el('main',  { class: 'plura-vs-main' });
 		root.append(app);
-		app.append(sidebar, main);
+		app.append(main);
 
 		// Mount points
-		const filterbarHost = el('div', { class: 'plura-vs-filterbar' });
-		const gridHost      = el('section', { class: 'plura-vs-grid' });
-		sidebar.append(filterbarHost);
-		main.append(gridHost);
+		//const filterbarHost = el('div', { class: 'plura-vs-filterbar' });
+		//const panelHost = el('div', { class: 'plura-vs-panel' });
+		//const gridHost = el('section', { class: 'plura-vs-grid' });
+		//sidebar.append(filterbarHost);
+		//panel.append(panelHost);
+		//main.append(gridHost);
 
 		// Inject optional feed-level global styles (before any template CSS)
 		const feedStyles = Array.isArray(feed.styles) ? feed.styles : (feed.styles ? [feed.styles] : []);
@@ -62,7 +64,7 @@ export const App = {
 		// Build grid from feed posts; resolve imageBase relative to feed
 		const imageBaseURL = feed.mediaBase ? new URL(feed.mediaBase, feedBase) : null;
 		const enriched = buildGrid(feed.posts || [], {
-			gridElement: gridHost,
+			container: main,
 			imageBase: imageBaseURL || undefined
 		}); // attaches .host to each post
 
@@ -78,8 +80,11 @@ export const App = {
 		});
 		TemplateManager.setContext(enriched);
 
+		// Build Panel Nav / FilterBar + connect to TemplatesManager etc
+		Panel.init({ container: app, templateManager: TemplateManager });
+
 		// Build FilterBar using available templates
-		const templates = TemplateManager.list(); // [{ name, title }, ...]
+/* 		const templates = TemplateManager.list(); // [{ name, title }, ...]
 		FilterBar.init({
 			container:   filterbarHost,
 			themeTarget: app,
@@ -90,7 +95,7 @@ export const App = {
 				}
 				// (future) handle more filters here
 			}
-		});
+		}); */
 
 		// First render: selectedTemplate from feed, else first
 		const firstName = feed.selectedTemplate || templates[0]?.name;
